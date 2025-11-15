@@ -17,7 +17,30 @@ const map = new mapboxgl.Map({
   maxZoom: 18, // Maximum allowed zoom
 });
 
+///////////////////////////////////////////////////
+
 map.on('load', async () => {
-    //code
+
+    // 1. ADD DATA SOURCE for Boston bike lanes
+    map.addSource('boston_route', {
+      type: 'geojson',
+      // The GeoJSON link for the Boston bike network
+      data: 'https://bostonopendata-boston.opendata.arcgis.com/datasets/boston::existing-bike-network-2022.geojson',
+    });
+  
+    // 2. ADD LAYER to visualize the data source as a line
+    map.addLayer({
+      id: 'bike-lanes-boston', // Unique ID for this layer
+      type: 'line',             // Line type is best for drawing roads/lanes
+      source: 'boston_route',   // References the source defined above
+      paint: {
+        'line-color': 'green',
+        'line-width': 3,
+        'line-opacity': 0.6, // Increased opacity slightly for visibility
+      },
+    });
+  
+    // NOTE: You will add the code for D3, stations, and the time filter later,
+    // all inside this same map.on('load', async () => { ... }) block.
     
   });
