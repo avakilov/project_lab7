@@ -48,3 +48,36 @@ map.on('load', async () => {
         'line-opacity': 0.6       // Slightly less transparent
       },
   });
+
+  let stations = jsonData.data.stations;
+  console.log('Stations Array:', stations);
+
+  const svg = d3.select('#map').select('svg');
+
+  function getCoords(station) {
+    const point = new mapboxgl.LngLat(+station.lon, +station.lat); // Convert lon/lat to Mapbox LngLat
+    const { x, y } = map.project(point); // Project to pixel coordinates
+    return { cx: x, cy: y }; // Return as object for use in SVG attributes
+  }
+
+  / Append circles to the SVG for each station
+const circles = svg
+  .selectAll('circle')
+  .data(stations)
+  .enter()
+  .append('circle')
+  .attr('r', 5) // Radius of the circle
+  .attr('fill', 'steelblue') // Circle fill color
+  .attr('stroke', 'white') // Circle border color
+  .attr('stroke-width', 1) // Circle border thickness
+  .attr('opacity', 0.8); // Circle opacity
+  // Function to update circle positions when the map moves/zooms
+  
+  function updatePositions() {
+    circles
+      .attr('cx', (d) => getCoords(d).cx) // Set the x-position using projected coordinates
+      .attr('cy', (d) => getCoords(d).cy); // Set the y-position using projected coordinates
+  }
+  
+  // Initial position update when map loads
+  updatePositions();
